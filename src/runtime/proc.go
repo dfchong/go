@@ -2386,17 +2386,19 @@ func templateThread() {
 }
 
 // Stops execution of the current m until new work is available.
+// 停止运行当前M , 直到新的工作出现
 // Returns with acquired P.
+// 恢复运行时 还有获取的P
 func stopm() {
-	_g_ := getg()
+	_g_ := getg()		// 获取当前G
 
-	if _g_.m.locks != 0 {
+	if _g_.m.locks != 0 {	// 如果当前G与M是锁定的 抛出错误
 		throw("stopm holding locks")
 	}
-	if _g_.m.p != 0 {
+	if _g_.m.p != 0 {	// 当前M的P有G队列 抛出错误
 		throw("stopm holding p")
 	}
-	if _g_.m.spinning {
+	if _g_.m.spinning {	//当前M处于自旋状态 抛出错误
 		throw("stopm spinning")
 	}
 
